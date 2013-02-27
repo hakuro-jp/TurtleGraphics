@@ -25,11 +25,11 @@ module TurtleGraphics
     end
 
     def right(angle)
-      @heading = @heading + angle
+      @heading = @heading - angle
     end
 
     def left(angle)
-      @heading = @heading - angle
+      @heading = @heading + angle
     end
 
     def forward(dist)
