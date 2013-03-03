@@ -1,9 +1,43 @@
 module TurtleGraphics
+  require 'gosu'
+  require 'gl'
+  require 'glu'
+  require 'glut'
+  
+  include Gl
+  include Glu
   include Math
-  class Plane
-    attr_accessor :space
-    def initialize()
-      @space = Array.new(200) { Array.new(200) }
+
+  class World < Gosu::Window
+    def initialize
+      super(800, 600, false)
+      self.caption = "Ruby TurtleGraphics"
+    end
+
+    def update
+    end
+
+    def draw
+      gl do
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glMatrixMode(GL_PROJECTION) 
+        glLoadIdentity 
+        gluPerspective(45.0, width / height, 0.1, 100.0)
+        glMatrixMode(GL_MODELVIEW) 
+        glLoadIdentity
+        glTranslate(0, 0, -2) # Moving function from the current point by x,y,z change
+        glColor(0,1,0)
+        glBegin(GL_LINES) 
+          glVertex3f(-0.25, 0.25, 0)
+	  glVertex3f(-0.75, 0.75, 0)
+        glEnd
+      end
+    end
+
+    def button_down(id)
+      if id == Gosu::KbEscape
+        close
+      end
     end
   end
 
@@ -47,9 +81,5 @@ module TurtleGraphics
   end
 end
 
-#simple test for classes
-world = TurtleGraphics::Plane.new()
 
-turtle = TurtleGraphics::Turtle.new()
-junior = TurtleGraphics::Turtle.new()
 
