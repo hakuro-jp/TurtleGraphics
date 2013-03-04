@@ -9,12 +9,22 @@ module TurtleGraphics
   include Math
 
   class World < Gosu::Window
+       
     def initialize
-      super(800, 600, false)
+      super(1024, 768, false)
       self.caption = "Ruby TurtleGraphics"
+
+      @objects = []
     end
 
     def update
+      @objects.each do |object|
+        object.update
+      end
+    end
+
+    def add_object(object)
+      @objects << object
     end
 
     def draw
@@ -25,12 +35,11 @@ module TurtleGraphics
         gluPerspective(45.0, width / height, 0.1, 100.0)
         glMatrixMode(GL_MODELVIEW) 
         glLoadIdentity
-        glTranslate(0, 0, -2) # Moving function from the current point by x,y,z change
-        glColor(0,1,0)
-        glBegin(GL_LINES) 
-          glVertex3f(-0.25, 0.25, 0)
-	  glVertex3f(-0.75, 0.75, 0)
-        glEnd
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
+        glTranslatef(0.0,0.0,-6.0)
+        @objects.each do |object| 
+          object.draw
+        end
       end
     end
 
@@ -50,14 +59,36 @@ module TurtleGraphics
     attr_accessor :color
 
     def initialize()
-      @x = 50
-      @y = 50
+      @x = 0
+      @y = 0
       @heading = 0.0
       @speed = 5
       @pen = 1
       @color = 'green'
+      @direction = 1
     end
 
+    def draw()
+      glColor3f(0,1,0)
+      glTranslatef(@x,@y,-6.0)
+      glRotatef(@heading, 0.0, 0.0, 1.0)
+      glBegin(GL_TRIANGLES) 
+        glVertex3f(0.0, 0.1, 0.0)
+        glVertex3f(-0.1,-0.1, 0.0)
+        glVertex3f( 0.1,-0.1, 0.0)
+      glEnd
+    end
+
+    def update()
+      if @x >= 1
+        @direction = -1
+      elsif @x <= -1
+        @direction = 1
+      end
+        
+      @x = @x += @direction * 0.01
+    end
+      
     def right(angle)
       @heading = @heading - angle
     end
